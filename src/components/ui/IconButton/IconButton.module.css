@@ -1,0 +1,88 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sm {
+  width: 28px;
+  height: 28px;
+}
+
+.md {
+  width: 36px;
+  height: 36px;
+}
+
+.lg {
+  width: 44px;
+  height: 44px;
+}
+
+.default:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.default:active:not(:disabled) {
+  background: var(--bg-secondary);
+}
+
+.primary {
+  background: var(--accent-blue);
+  color: var(--bg-primary);
+}
+
+.primary:hover:not(:disabled) {
+  background: #79b8ff;
+}
+
+.primary:active:not(:disabled) {
+  background: #4a9eff;
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.control {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+}
+
+.control:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+.control.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: var(--bg-primary);
+}
+
+.control.active:hover:not(:disabled) {
+  background: #79b8ff;
+}
+
+.active {
+  background: var(--accent-blue);
+  color: var(--bg-primary);
+}
+
+.active:hover:not(:disabled) {
+  background: #79b8ff;
+}
