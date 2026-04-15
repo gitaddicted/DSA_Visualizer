@@ -13,7 +13,7 @@ import {
   Select,
   Slider,
   Statistics,
-} from '..';
+} from '../../../src/components';
 
 describe('UI elements', () => {
   it('renders and activates the primary button', () => {

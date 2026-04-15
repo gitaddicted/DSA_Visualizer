@@ -28,6 +28,7 @@ function App() {
   const [arraySize, setArraySize] = useState(15);
   const [customValues, setCustomValues] = useState('');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType>('bubble');
+  const [isShelfOpen, setIsShelfOpen] = useState(false);
 
   const [initialArray] = useState(() => generateRandomArray(15));
 
@@ -92,23 +93,63 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <header className={styles.header}>
-        <div className={styles.logo}>
-          <svg className={styles.logoIcon} viewBox="0 0 32 32" fill="none">
-            <rect x="2" y="16" width="6" height="14" rx="1" fill="#3fb950"/>
-            <rect x="10" y="10" width="6" height="20" rx="1" fill="#58a6ff"/>
-            <rect x="18" y="4" width="6" height="26" rx="1" fill="#a371f7"/>
-            <rect x="26" y="12" width="4" height="18" rx="1" fill="#d29922"/>
-          </svg>
-          <span className={styles.logoText}>
-            DSA Visualizer
-            <span className={styles.logoSubtext}>Sorting Algorithms</span>
-          </span>
-        </div>
-      </header>
+      <section className={styles.topPlayback}>
+        <PlaybackControls
+          isPlaying={isPlaying}
+          onPlay={play}
+          onPause={pause}
+          onStepForward={stepForward}
+          onStepBackward={stepBackward}
+          onJumpToStart={jumpToStart}
+          onJumpToEnd={jumpToEnd}
+          onReset={handleReset}
+          canStepForward={currentStep < steps.length - 1}
+          canStepBackward={currentStep > 0}
+          description={currentStepData?.description}
+        />
+      </section>
 
       <main className={styles.main}>
-        <aside className={styles.sidebar}>
+        <div className={styles.content}>
+          <section className={styles.visualizerSection}>
+            <ArrayVisualizer
+              array={currentStepData?.array || array}
+              comparing={currentStepData?.comparing || []}
+              swapping={currentStepData?.swapping || []}
+              pivot={currentStepData?.pivot}
+              sorted={currentStepData?.sorted || []}
+              currentStep={currentStep}
+              totalSteps={Math.max(steps.length - 1, 1)}
+            />
+          </section>
+
+          <section className={styles.pseudocodeSection}>
+            <Pseudocode
+              lines={algorithmInfo.pseudocode}
+              currentLine={currentStepData?.highlightLine || 0}
+              algorithmName={algorithmInfo.name}
+            />
+          </section>
+
+        </div>
+      </main>
+
+      <button
+        type="button"
+        className={styles.shelfHandle}
+        onClick={() => setIsShelfOpen((prev) => !prev)}
+        aria-expanded={isShelfOpen}
+        aria-controls="left-shelf-panel"
+        aria-label={isShelfOpen ? 'Hide controls panel' : 'Show controls panel'}
+      >
+        {isShelfOpen ? '✕' : '≡'}
+      </button>
+
+      <aside
+        id="left-shelf-panel"
+        className={`${styles.shelfPanel} ${isShelfOpen ? styles.shelfPanelOpen : ''}`}
+      >
+        <div className={styles.shelfScroll}>
           <Card>
             <CardHeader title="Algorithm" subtitle="Select sorting algorithm" />
             <CardBody>
@@ -123,7 +164,7 @@ function App() {
           <Card>
             <CardHeader title="Parameters" subtitle="Configure visualization" />
             <CardBody>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className={styles.controlStack}>
                 <Slider
                   label="Array Size"
                   value={arraySize}
@@ -164,46 +205,8 @@ function App() {
             complexity={algorithmInfo.complexity}
             algorithmName={algorithmInfo.name}
           />
-        </aside>
-
-        <div className={styles.content}>
-          <section className={styles.visualizerSection}>
-            <ArrayVisualizer
-              array={currentStepData?.array || array}
-              comparing={currentStepData?.comparing || []}
-              swapping={currentStepData?.swapping || []}
-              pivot={currentStepData?.pivot}
-              sorted={currentStepData?.sorted || []}
-              currentStep={currentStep}
-              totalSteps={Math.max(steps.length - 1, 1)}
-            />
-          </section>
-
-          <section className={styles.pseudocodeSection}>
-            <Pseudocode
-              lines={algorithmInfo.pseudocode}
-              currentLine={currentStepData?.highlightLine || 0}
-              algorithmName={algorithmInfo.name}
-            />
-          </section>
-
-          <section className={styles.controlsSection}>
-            <PlaybackControls
-              isPlaying={isPlaying}
-              onPlay={play}
-              onPause={pause}
-              onStepForward={stepForward}
-              onStepBackward={stepBackward}
-              onJumpToStart={jumpToStart}
-              onJumpToEnd={jumpToEnd}
-              onReset={handleReset}
-              canStepForward={currentStep < steps.length - 1}
-              canStepBackward={currentStep > 0}
-              description={currentStepData?.description}
-            />
-          </section>
         </div>
-      </main>
+      </aside>
     </div>
   );
 }

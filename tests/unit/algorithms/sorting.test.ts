@@ -6,7 +6,7 @@ import {
   mergeSort,
   quickSort,
   heapSort,
-} from '../index';
+} from '../../../src/algorithms';
 
 describe('Sorting Algorithms', () => {
   const testCases = [

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { Select } from './Select';
 import { useState } from 'react';
 
@@ -73,4 +74,32 @@ export const Gallery: Story = {
       />
     </div>
   ),
+};
+
+export const InteractionSelect: Story = {
+  render: () => {
+    const [value, setValue] = useState('bubble');
+
+    return (
+      <div style={{ maxWidth: '300px' }}>
+        <Select
+          label="Sorting Algorithm"
+          value={value}
+          onChange={setValue}
+          options={algorithmOptions}
+        />
+        <p data-testid="selected-value" style={{ marginTop: '16px', color: 'var(--text-secondary)', fontSize: '14px' }}>
+          Selected: {value}
+        </p>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByRole('combobox');
+
+    await userEvent.selectOptions(select, 'quick');
+
+    await expect(canvas.getByTestId('selected-value')).toHaveTextContent('Selected: quick');
+  },
 };

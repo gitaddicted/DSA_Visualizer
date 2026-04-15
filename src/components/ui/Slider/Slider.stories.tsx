@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fireEvent, within } from '@storybook/test';
 import { Slider } from './Slider';
 import { useState } from 'react';
 
@@ -77,4 +78,34 @@ export const Gallery: Story = {
       <Slider label="With Ticks" value={3} min={1} max={5} formatValue={(v) => `Level ${v}`} onChange={() => {}} />
     </div>
   ),
+};
+
+export const InteractionDrag: Story = {
+  render: () => {
+    const [value, setValue] = useState(40);
+
+    return (
+      <div style={{ maxWidth: '400px' }}>
+        <Slider
+          label="Drag Test"
+          value={value}
+          onChange={setValue}
+          min={0}
+          max={100}
+          step={10}
+        />
+        <p data-testid="slider-readout" style={{ marginTop: '12px', color: 'var(--text-secondary)' }}>
+          Value: {value}
+        </p>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const slider = canvas.getByRole('slider');
+
+    fireEvent.change(slider, { target: { value: '70' } });
+
+    await expect(canvas.getByTestId('slider-readout')).toHaveTextContent('Value: 70');
+  },
 };
