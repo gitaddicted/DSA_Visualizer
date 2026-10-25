@@ -42,12 +42,13 @@ function Bar({
 
   return (
     <div className={styles.bar} data-testid={`array-bar-${index}`}>
-      <span className={styles.barValue}>{value}</span>
       <div
         className={barClasses}
         data-testid={`array-bar-fill-${index}`}
         style={{ height: `${Math.max(heightPercentage, 5)}%` }}
-      />
+      >
+        <span className={styles.barValue}>{value}</span>
+      </div>
     </div>
   );
 }

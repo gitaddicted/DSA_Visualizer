@@ -51,21 +51,29 @@
   max-width: 60px;
   min-width: 8px;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
   transition: all var(--transition-slow);
 }
 
 .barValue {
   position: absolute;
-  top: 0;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   color: var(--text-secondary);
   opacity: 0;
   transition: opacity var(--transition-fast);
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-.bar:hover .barValue {
+.barRect:hover {
+  z-index: 1;
+}
+
+.barRect:hover .barValue {
   opacity: 1;
 }
 
