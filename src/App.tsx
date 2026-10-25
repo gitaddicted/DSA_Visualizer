@@ -93,22 +93,6 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <section className={styles.topPlayback}>
-        <PlaybackControls
-          isPlaying={isPlaying}
-          onPlay={play}
-          onPause={pause}
-          onStepForward={stepForward}
-          onStepBackward={stepBackward}
-          onJumpToStart={jumpToStart}
-          onJumpToEnd={jumpToEnd}
-          onReset={handleReset}
-          canStepForward={currentStep < steps.length - 1}
-          canStepBackward={currentStep > 0}
-          description={currentStepData?.description}
-        />
-      </section>
-
       <main className={styles.main}>
         <div className={styles.content}>
           <section className={styles.visualizerSection}>
@@ -132,6 +116,22 @@ function App() {
           </section>
 
         </div>
+
+        <section className={styles.playbackSection}>
+          <PlaybackControls
+            isPlaying={isPlaying}
+            onPlay={play}
+            onPause={pause}
+            onStepForward={stepForward}
+            onStepBackward={stepBackward}
+            onJumpToStart={jumpToStart}
+            onJumpToEnd={jumpToEnd}
+            onReset={handleReset}
+            canStepForward={currentStep < steps.length - 1}
+            canStepBackward={currentStep > 0}
+            description={currentStepData?.description}
+          />
+        </section>
       </main>
 
       <aside
