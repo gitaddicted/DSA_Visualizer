@@ -2,11 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from '@storybook/test';
 import { Button } from './Button';
 
+// PATTERN: STORYBOOK META — defines the component, its title, and controls
 const meta: Meta<typeof Button> = {
-  title: 'UI/Button',
+  title: 'UI/Button',       // PATTERN: Naming convention — Category/Component
   component: Button,
-  tags: ['autodocs'],
-  argTypes: {
+  tags: ['autodocs'],        // PATTERN: autodocs tag — auto-generates documentation page
+  argTypes: {                // PATTERN: argTypes — configures the Controls addon UI
     variant: {
       control: 'select',
       options: ['primary', 'secondary', 'ghost', 'danger'],
@@ -15,81 +16,55 @@ const meta: Meta<typeof Button> = {
       control: 'select',
       options: ['sm', 'md', 'lg'],
     },
-    loading: {
-      control: 'boolean',
-    },
-    disabled: {
-      control: 'boolean',
-    },
+    loading: { control: 'boolean' },
+    disabled: { control: 'boolean' },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof Button>;
 
+// PATTERN: VARIANT STORIES — each exported story demonstrates one prop configuration
 export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    children: 'Primary Button',
-  },
+  args: { variant: 'primary', children: 'Primary Button' },
 };
+// ^ PATTERN: args — maps directly to the component's props
 
 export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Secondary Button',
-  },
+  args: { variant: 'secondary', children: 'Secondary Button' },
 };
 
 export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Ghost Button',
-  },
+  args: { variant: 'ghost', children: 'Ghost Button' },
 };
 
 export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    children: 'Danger Button',
-  },
+  args: { variant: 'danger', children: 'Danger Button' },
 };
 
+// PATTERN: SIZE STORIES — showcase each size variant
 export const Small: Story = {
-  args: {
-    size: 'sm',
-    children: 'Small Button',
-  },
+  args: { size: 'sm', children: 'Small Button' },
 };
 
 export const Medium: Story = {
-  args: {
-    size: 'md',
-    children: 'Medium Button',
-  },
+  args: { size: 'md', children: 'Medium Button' },
 };
 
 export const Large: Story = {
-  args: {
-    size: 'lg',
-    children: 'Large Button',
-  },
+  args: { size: 'lg', children: 'Large Button' },
 };
 
+// PATTERN: STATE STORIES — demonstrate loading and disabled states
 export const Loading: Story = {
-  args: {
-    loading: true,
-    children: 'Loading...',
-  },
+  args: { loading: true, children: 'Loading...' },
 };
 
 export const Disabled: Story = {
-  args: {
-    disabled: true,
-    children: 'Disabled Button',
-  },
+  args: { disabled: true, children: 'Disabled Button' },
 };
 
+// PATTERN: COMPOSITE STORY — uses render function to show multiple variants together
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -101,10 +76,11 @@ export const AllVariants: Story = {
   ),
 };
 
+// PATTERN: INTERACTION TEST — uses play function + @storybook/test for in-browser testing
 export const InteractionClick: Story = {
   args: {
     children: 'Run Test Click',
-    onClick: fn(),
+    onClick: fn(),     // PATTERN: fn() creates a mock function that records calls
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);

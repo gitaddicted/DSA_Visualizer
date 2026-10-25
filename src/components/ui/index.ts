@@ -1,3 +1,5 @@
+// PATTERN: BARREL EXPORTS — named exports for each component + its type
+// Allows importing from '../../ui' instead of '../../ui/Button/Button'
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
 

@@ -11,6 +11,7 @@ export interface ArrayVisualizerProps {
   totalSteps: number;
 }
 
+// PATTERN: INTERNAL COMPONENT — defined in the same file, only used here
 function Bar({
   value,
   maxValue,
@@ -30,6 +31,7 @@ function Bar({
 }) {
   const heightPercentage = (value / maxValue) * 100;
 
+  // PATTERN: Conditional class array with priority — sorted only applies when no other state
   const barClasses = [
     styles.barRect,
     isComparing && styles.comparing,
@@ -52,6 +54,7 @@ function Bar({
   );
 }
 
+// PATTERN: React.memo — prevents re-render when props haven't changed (performance optimization)
 const MemoizedBar = memo(Bar);
 
 export function ArrayVisualizer({
@@ -63,8 +66,10 @@ export function ArrayVisualizer({
   currentStep,
   totalSteps,
 }: ArrayVisualizerProps) {
+  // PATTERN: useMemo — caches computed value, only re-computes when dependency (array) changes
   const maxValue = useMemo(() => Math.max(...array, 1), [array]);
 
+  // PATTERN: Early return for empty state — renders a placeholder instead of the chart
   if (array.length === 0) {
     return (
       <div className={styles.container}>
@@ -84,9 +89,10 @@ export function ArrayVisualizer({
         </span>
       </div>
       <div className={styles.visualizer}>
+        {/* PATTERN: Array.map to render a list — each MemoizedBar gets a unique key */}
         {array.map((value, index) => (
           <MemoizedBar
-            key={`${index}-${value}`}
+            key={`${index}-${value}`}   // PATTERN: Composite key (index + value) for stability
             value={value}
             maxValue={maxValue}
             isComparing={comparing.includes(index)}
@@ -97,6 +103,7 @@ export function ArrayVisualizer({
           />
         ))}
       </div>
+      {/* PATTERN: Static legend — pure presentational JSX, no logic */}
       <div className={styles.legend}>
         <div className={styles.legendItem}>
           <span className={`${styles.legendColor} ${styles.legendComparing}`} />

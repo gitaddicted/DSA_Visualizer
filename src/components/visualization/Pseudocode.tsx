@@ -7,6 +7,7 @@ export interface PseudocodeProps {
   algorithmName: string;
 }
 
+// PATTERN: Custom rendering function — not a React component, returns ReactNode
 function highlightSyntax(line: string): React.ReactNode {
   const keywords = /\b(procedure|function|for|while|if|else|then|end|return|to|do|not|in|and|or)\b/gi;
   const procedures = /\b(bubbleSort|selectionSort|insertionSort|mergeSort|quickSort|heapSort|merge|partition|heapify|buildMaxHeap)\b/gi;
@@ -14,36 +15,40 @@ function highlightSyntax(line: string): React.ReactNode {
   const comments = /\b(starting|comparing|swapping|complete|moving|placing|found|inserting|dividing|sorting|heapifying|building|copying|remaining|pivoting)\b/gi;
 
   if (line.trim() === '') {
-    return '\u00A0';
+    return '\u00A0';         // PATTERN: Non-breaking space preserves empty line height
   }
 
   let result = line;
 
+  // PATTERN: String.replace with regex — builds HTML string for syntax coloring
   result = result.replace(
     /(["'])(?:(?=(\\?))\2.)*?\1/g,
     '<span class="' + styles.variable + '">$&</span>'
   );
 
-  result = result.replace(procedures, (match) => 
+  result = result.replace(procedures, (match) =>
     `<span class="${styles.procedure}">${match}</span>`
   );
 
-  result = result.replace(keywords, (match) => 
+  result = result.replace(keywords, (match) =>
     `<span class="${styles.keyword}">${match}</span>`
   );
 
-  result = result.replace(variables, (match) => 
+  result = result.replace(variables, (match) =>
     `<span class="${styles.variable}">${match}</span>`
   );
 
-  result = result.replace(comments, (match) => 
+  result = result.replace(comments, (match) =>
     `<span class="${styles.comment}">${match}</span>`
   );
 
+  // PATTERN: dangerouslySetInnerHTML — necessary here to render HTML string from regex
+  // In most cases avoid this; here it's the clearest approach for syntax highlighting
   return <span dangerouslySetInnerHTML={{ __html: result }} />;
 }
 
 export function Pseudocode({ lines, currentLine, algorithmName }: PseudocodeProps) {
+  // PATTERN: useMemo transforms lines into display objects — only re-runs when deps change
   const codeLines = useMemo(() => {
     if (lines.length === 0) {
       return [
@@ -53,7 +58,7 @@ export function Pseudocode({ lines, currentLine, algorithmName }: PseudocodeProp
     return lines.map((line, index) => ({
       number: index + 1,
       code: line,
-      highlighted: index === currentLine,
+      highlighted: index === currentLine,   // which line to highlight
     }));
   }, [lines, currentLine]);
 
@@ -61,6 +66,7 @@ export function Pseudocode({ lines, currentLine, algorithmName }: PseudocodeProp
     <div className={styles.container}>
       <div className={styles.header}>
         <h3 className={styles.title}>Pseudocode</h3>
+        {/* PATTERN: Inline style — quick one-off styling without a CSS module class */}
         <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
           {algorithmName}
         </span>

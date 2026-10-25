@@ -6,9 +6,10 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   size?: 'sm' | 'md' | 'lg';
   active?: boolean;
   children: ReactNode;
-  label: string;
+  label: string;    // PATTERN: Required label prop — enforces accessibility
 }
 
+// PATTERN: ICON BUTTON — no visible text, relies on aria-label for screen readers
 export function IconButton({
   variant = 'default',
   size = 'md',
@@ -33,11 +34,11 @@ export function IconButton({
     <button
       className={classes}
       disabled={disabled}
-      aria-label={label}
-      title={label}
+      aria-label={label}    // PATTERN: aria-label provides accessible name for icon-only button
+      title={label}          // PATTERN: title shows tooltip on hover
       {...props}
     >
-      {children}
+      {children}             {/* PATTERN: children is the icon element (from lucide-react) */}
     </button>
   );
 }

@@ -7,12 +7,13 @@ export interface SliderProps {
   min: number;
   max: number;
   step?: number;
-  formatValue?: (value: number) => string;
+  formatValue?: (value: number) => string;  // PATTERN: Format callback — transforms display
   showRangeLabels?: boolean;
   disabled?: boolean;
   className?: string;
 }
 
+// PATTERN: Derived values computed from props, not stored in state
 export function Slider({
   label,
   value,
@@ -25,7 +26,7 @@ export function Slider({
   disabled,
   className,
 }: SliderProps) {
-  const percentage = ((value - min) / (max - min)) * 100;
+  const percentage = ((value - min) / (max - min)) * 100;  // computed %
 
   const displayValue = formatValue ? formatValue(value) : value.toString();
 
@@ -37,6 +38,7 @@ export function Slider({
       </div>
       <div className={styles.sliderWrapper}>
         <div className={styles.track} />
+        {/* PATTERN: Inline style for dynamic width — common for progress/range fills */}
         <div className={styles.fill} style={{ width: `${percentage}%` }} />
         <input
           type="range"

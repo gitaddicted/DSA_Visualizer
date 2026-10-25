@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import styles from './Button.module.css';
 
+// PATTERN: Extends native HTML attributes — component accepts ALL native button props
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
@@ -8,6 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 
+// PATTERN: Destructuring with default values — props without a value fall back
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -15,14 +17,15 @@ export function Button({
   disabled,
   className,
   children,
-  ...props
+  ...props               // PATTERN: Rest spread — captures remaining native props
 }: ButtonProps) {
+  // PATTERN: Conditional class array — filter(Boolean).join(' ') is idiomatic React
   const classes = [
-    styles.button,
-    styles[variant],
+    styles.button,          // always applied
+    styles[variant],        // dynamic lookup in CSS Module object
     styles[size],
-    loading && styles.loading,
-    className,
+    loading && styles.loading,  // only included when truthy
+    className,              // allows consumers to pass extra classes
   ]
     .filter(Boolean)
     .join(' ');
@@ -30,11 +33,11 @@ export function Button({
   return (
     <button
       className={classes}
-      disabled={disabled || loading}
-      {...props}
+      disabled={disabled || loading}  // PATTERN: Computed disabled — loading implies disabled
+      {...props}                      // PATTERN: Spread remaining props onto the native element
     >
-      {loading && <span className={styles.spinner} />}
-      {children}
+      {loading && <span className={styles.spinner} />}  // PATTERN: Conditional render with &&
+      {children}                                        // PATTERN: children prop renders nested content
     </button>
   );
 }

@@ -149,6 +149,7 @@ export const algorithmInfo: Record<string, AlgorithmInfo> = {
   },
 };
 
+// PATTERN: Helper function — creates a SortStep with cloned arrays (immutability)
 function createStep(
   array: number[],
   comparing: number[],
@@ -159,7 +160,7 @@ function createStep(
   pivot?: number
 ): SortStep {
   return {
-    array: [...array],
+    array: [...array],          // PATTERN: Spread operator creates a copy (immutability)
     comparing: [...comparing],
     swapping: [...swapping],
     sorted: [...sorted],
@@ -169,12 +170,15 @@ function createStep(
   };
 }
 
+// PATTERN: GENERATOR FUNCTION (function*) — yields multiple values over time
+// PATTERN: Generator<SortStep> — typed to yield SortStep objects
 export function* bubbleSort(arr: number[]): Generator<SortStep> {
-  const array = [...arr];
+  const array = [...arr];       // PATTERN: Copy input to avoid mutating the original
   const n = array.length;
   const sorted: number[] = [];
 
   yield createStep(array, [], [], [...sorted], 0, 'Starting Bubble Sort');
+  // ^ PATTERN: yield — pauses execution and emits a value to the consumer
 
   for (let i = 0; i < n - 1; i++) {
     let swapped = false;
@@ -199,6 +203,7 @@ export function* bubbleSort(arr: number[]): Generator<SortStep> {
           `Swapping ${array[j]} and ${array[j + 1]}`
         );
 
+        // PATTERN: Destructuring swap — no temp variable needed
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
         swapped = true;
 
@@ -720,6 +725,8 @@ export function* heapSort(arr: number[]): Generator<SortStep> {
   );
 }
 
+// PATTERN: REGISTRY OBJECT — maps AlgorithmType string to { generator, info }
+// This is the lookup table used by the hook to find the right algorithm
 export const algorithms = {
   bubble: { generator: bubbleSort, info: algorithmInfo.bubble },
   selection: { generator: selectionSort, info: algorithmInfo.selection },

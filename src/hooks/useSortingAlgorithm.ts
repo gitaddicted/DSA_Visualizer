@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { SortStep, AlgorithmType } from '../algorithms/types';
 import { algorithms } from '../algorithms';
 
+// PATTERN: Return type interface — documents the hook's public API
 export interface UseSortingAlgorithmReturn {
   array: number[];
   steps: SortStep[];
@@ -29,10 +30,12 @@ export interface UseSortingAlgorithmReturn {
   };
 }
 
+// PATTERN: CUSTOM HOOK — extracts stateful logic from components into reusable functions
 export function useSortingAlgorithm(
   initialArray: number[] = [],
   initialAlgorithm: AlgorithmType = 'bubble'
 ): UseSortingAlgorithmReturn {
+  // PATTERN: Multiple useState calls — one per independent piece of state
   const [array, setArrayState] = useState<number[]>(initialArray);
   const [algorithm, setAlgorithmState] = useState<AlgorithmType>(initialAlgorithm);
   const [steps, setSteps] = useState<SortStep[]>([]);
@@ -42,8 +45,10 @@ export function useSortingAlgorithm(
   const [comparisons, setComparisons] = useState(0);
   const [swaps, setSwaps] = useState(0);
 
+  // PATTERN: useRef — holds mutable value across renders WITHOUT causing re-render
   const intervalRef = useRef<number | null>(null);
 
+  // PATTERN: DRAGGING A GENERATOR — fully consumes the generator into an array for instant seek
   const generateSteps = useCallback((arr: number[], algo: AlgorithmType) => {
     const generator = algorithms[algo].generator(arr);
     const generatedSteps: SortStep[] = [];
@@ -54,6 +59,7 @@ export function useSortingAlgorithm(
       result = generator.next();
     }
 
+    // PATTERN: Spread operator — clones last step to add completion marker
     if (generatedSteps.length > 0) {
       generatedSteps.push({
         ...generatedSteps[generatedSteps.length - 1],
@@ -64,8 +70,10 @@ export function useSortingAlgorithm(
     return generatedSteps;
   }, []);
 
+  // PATTERN: Derived value — computed from state, not stored in state
   const algorithmInfo = algorithms[algorithm].info;
 
+  // PATTERN: useEffect — synchronizes steps when inputs (array/algorithm) change
   useEffect(() => {
     if (array.length > 0) {
       const newSteps = generateSteps([...array], algorithm);
@@ -76,6 +84,7 @@ export function useSortingAlgorithm(
     }
   }, [array, algorithm, generateSteps]);
 
+  // PATTERN: useEffect — derives stats by reacting to step changes
   useEffect(() => {
     if (steps.length > 0 && currentStep > 0 && currentStep <= steps.length) {
       const step = steps[currentStep - 1];
@@ -90,6 +99,7 @@ export function useSortingAlgorithm(
     }
   }, [currentStep, steps]);
 
+  // PATTERN: useEffect with cleanup — manages the playback interval lifecycle
   useEffect(() => {
     if (isPlaying && currentStep < steps.length - 1) {
       intervalRef.current = window.setInterval(() => {
@@ -103,6 +113,7 @@ export function useSortingAlgorithm(
       }, speed);
     }
 
+    // PATTERN: Cleanup function — runs on unmount or before re-running the effect
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -111,6 +122,7 @@ export function useSortingAlgorithm(
     };
   }, [isPlaying, speed, steps.length]);
 
+  // PATTERN: All mutating functions wrapped in useCallback for stable references
   const play = useCallback(() => {
     if (currentStep >= steps.length - 1) {
       setCurrentStep(0);
@@ -156,6 +168,7 @@ export function useSortingAlgorithm(
     }
   }, [steps.length]);
 
+  // PATTERN: Reset — clears all state back to initial values
   const reset = useCallback(() => {
     setCurrentStep(0);
     setComparisons(0);
@@ -190,7 +203,7 @@ export function useSortingAlgorithm(
   }, []);
 
   const generateRandomArray = useCallback((size: number) => {
-    const newArray = Array.from({ length: size }, () => 
+    const newArray = Array.from({ length: size }, () =>
       Math.floor(Math.random() * 100) + 5
     );
     setArrayState(newArray);
@@ -200,8 +213,10 @@ export function useSortingAlgorithm(
     setIsPlaying(false);
   }, []);
 
+  // PATTERN: Derived value — computed synchronously from state, available immediately
   const currentStepData = steps[currentStep] || null;
 
+  // PATTERN: Return object — exposes state + actions as a single cohesive API
   return {
     array: currentStepData?.array || array,
     steps,

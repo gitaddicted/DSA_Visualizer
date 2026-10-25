@@ -1,6 +1,7 @@
 import { InputHTMLAttributes } from 'react';
 import styles from './Input.module.css';
 
+// PATTERN: Extends native input props — inherits onChange, placeholder, value, etc.
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
@@ -14,7 +15,7 @@ export function Input({
   hint,
   variant = 'default',
   className,
-  ...props
+  ...props       // PATTERN: Rest spread — captures all native input attributes
 }: InputProps) {
   const inputClasses = [
     styles.input,
@@ -28,7 +29,9 @@ export function Input({
   return (
     <div className={styles.wrapper}>
       {label && <label className={styles.label}>{label}</label>}
+      {/* PATTERN: Spread native props onto the real <input> element */}
       <input className={inputClasses} {...props} />
+      {/* PATTERN: Conditional error vs hint — only one shows at a time */}
       {error && <span className={styles.errorMessage}>{error}</span>}
       {hint && !error && <span className={styles.hint}>{hint}</span>}
     </div>

@@ -11,6 +11,7 @@ export interface CardHeaderProps {
   subtitle?: string;
 }
 
+// PATTERN: Reusable container — accepts variant prop to switch visual style
 export function Card({
   variant = 'default',
   className,
@@ -33,11 +34,14 @@ export function Card({
   );
 }
 
+// PATTERN: COMPOUND COMPONENT — CardHeader, CardBody, CardFooter
+// These are designed to be used as children of <Card>
 export function CardHeader({ title, subtitle }: CardHeaderProps) {
   return (
     <div className={styles.header}>
       <h3 className={styles.title}>{title}</h3>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      {/* ^ PATTERN: Conditional render with && — only renders when subtitle is truthy */}
     </div>
   );
 }

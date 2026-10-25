@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { 
-  Card, CardHeader, CardBody, 
+import {
+  Card, CardHeader, CardBody,
   Select, Slider, Input, Button,
   ArrayVisualizer, Pseudocode,
   PlaybackControls, Statistics
@@ -9,6 +9,7 @@ import { useSortingAlgorithm } from './hooks';
 import { AlgorithmType } from './algorithms/types';
 import styles from './App.module.css';
 
+// STATIC DATA — defined outside component so it's not recreated on every render
 const algorithmOptions = [
   { value: 'bubble', label: 'Bubble Sort', badge: 'O(n²)' },
   { value: 'selection', label: 'Selection Sort', badge: 'O(n²)' },
@@ -19,42 +20,33 @@ const algorithmOptions = [
 ];
 
 function generateRandomArray(size: number): number[] {
-  return Array.from({ length: size }, () => 
+  return Array.from({ length: size }, () =>
     Math.floor(Math.random() * 100) + 5
   );
 }
 
 function App() {
+  // PATTERN: useState — local state management
   const [arraySize, setArraySize] = useState(15);
   const [customValues, setCustomValues] = useState('');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType>('bubble');
   const [isShelfOpen, setIsShelfOpen] = useState(false);
 
+  // PATTERN: Lazy initializer — runs once (function passed, not called)
   const [initialArray] = useState(() => generateRandomArray(15));
 
+  // PATTERN: Custom hook — encapsulates all algorithmic logic
   const {
-    array,
-    steps,
-    currentStep,
-    isPlaying,
-    speed,
-    comparisons,
-    swaps,
-    currentStepData,
-    play,
-    pause,
-    stepForward,
-    stepBackward,
-    jumpToStart,
-    jumpToEnd,
-    reset,
-    setSpeed,
-    setArray,
-    setAlgorithm,
+    array, steps, currentStep, isPlaying, speed,
+    comparisons, swaps, currentStepData,
+    play, pause, stepForward, stepBackward,
+    jumpToStart, jumpToEnd, reset,
+    setSpeed, setArray, setAlgorithm,
     generateRandomArray: generateNewArray,
     algorithmInfo,
   } = useSortingAlgorithm(initialArray, selectedAlgorithm);
 
+  // PATTERN: useCallback — stable function reference prevents child re-renders
   const handleAlgorithmChange = useCallback((value: string) => {
     setSelectedAlgorithm(value as AlgorithmType);
     setAlgorithm(value as AlgorithmType);
@@ -74,7 +66,7 @@ function App() {
       .split(/[,\s]+/)
       .map(v => parseInt(v.trim(), 10))
       .filter(v => !isNaN(v) && v > 0 && v <= 100);
-    
+
     if (values.length > 0) {
       setArray(values);
       setArraySize(values.length);
@@ -91,6 +83,8 @@ function App() {
     setCustomValues('');
   }, [reset]);
 
+  // PATTERN: COMPOSITION — small components nested to build the full UI
+  // PATTERN: PROP DRILLING — data & callbacks flow down through props
   return (
     <div className={styles.app}>
       <section className={styles.topPlayback}>
@@ -103,8 +97,10 @@ function App() {
           onJumpToStart={jumpToStart}
           onJumpToEnd={jumpToEnd}
           onReset={handleReset}
+          // PATTERN: Derived boolean props computed inline
           canStepForward={currentStep < steps.length - 1}
           canStepBackward={currentStep > 0}
+          // PATTERN: Optional chaining (?.) for nullable values
           description={currentStepData?.description}
         />
       </section>
@@ -134,6 +130,7 @@ function App() {
         </div>
       </main>
 
+      {/* PATTERN: Inline event handler + ternary for conditional content */}
       <button
         type="button"
         className={styles.shelfHandle}
@@ -145,14 +142,17 @@ function App() {
         {isShelfOpen ? '✕' : '≡'}
       </button>
 
+      {/* PATTERN: Template literal with conditional class — common pattern for dynamic styles */}
       <aside
         id="left-shelf-panel"
         className={`${styles.shelfPanel} ${isShelfOpen ? styles.shelfPanelOpen : ''}`}
       >
         <div className={styles.shelfScroll}>
+          {/* PATTERN: Compound components — CardHeader/CardBody are children of Card */}
           <Card>
             <CardHeader title="Algorithm" subtitle="Select sorting algorithm" />
             <CardBody>
+              {/* PATTERN: Controlled component — value + onChange */}
               <Select
                 value={selectedAlgorithm}
                 onChange={handleAlgorithmChange}
@@ -165,6 +165,7 @@ function App() {
             <CardHeader title="Parameters" subtitle="Configure visualization" />
             <CardBody>
               <div className={styles.controlStack}>
+                {/* PATTERN: Controlled Slider with format callback */}
                 <Slider
                   label="Array Size"
                   value={arraySize}
@@ -182,6 +183,7 @@ function App() {
                   formatValue={(v) => `${v}ms`}
                   showRangeLabels
                 />
+                {/* PATTERN: Input with multiple event handlers */}
                 <Input
                   label="Custom Values"
                   placeholder="e.g., 5, 3, 8, 1, 9"
@@ -190,6 +192,7 @@ function App() {
                   onBlur={handleCustomValuesBlur}
                   hint="Enter comma-separated numbers (5-100)"
                 />
+                {/* PATTERN: Button with variant prop + event handler callback */}
                 <Button variant="secondary" onClick={handleRandomize}>
                   Randomize Array
                 </Button>

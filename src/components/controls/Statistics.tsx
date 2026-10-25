@@ -9,6 +9,7 @@ export interface StatisticsProps {
   algorithmName: string;
 }
 
+// PATTERN: PRESENTATIONAL COMPONENT — no state, just renders props (aka "dumb component")
 export function Statistics({
   comparisons,
   swaps,
@@ -17,6 +18,7 @@ export function Statistics({
   complexity,
   algorithmName,
 }: StatisticsProps) {
+  // PATTERN: Derived value — computed from props, never stored in state
   const progress = totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0;
 
   return (
@@ -49,8 +51,9 @@ export function Statistics({
           <span>{Math.round(progress)}%</span>
         </div>
         <div className={styles.progressBar}>
-          <div 
-            className={styles.progressFill} 
+          {/* PATTERN: Inline style for dynamic width — progress fill driven by percentage */}
+          <div
+            className={styles.progressFill}
             style={{ width: `${progress}%` }}
           />
         </div>
