@@ -134,21 +134,21 @@ function App() {
         </div>
       </main>
 
-      <button
-        type="button"
-        className={styles.shelfHandle}
-        onClick={() => setIsShelfOpen((prev) => !prev)}
-        aria-expanded={isShelfOpen}
-        aria-controls="left-shelf-panel"
-        aria-label={isShelfOpen ? 'Hide controls panel' : 'Show controls panel'}
-      >
-        {isShelfOpen ? '✕' : '≡'}
-      </button>
-
       <aside
         id="left-shelf-panel"
         className={`${styles.shelfPanel} ${isShelfOpen ? styles.shelfPanelOpen : ''}`}
       >
+        <button
+          type="button"
+          className={styles.shelfHandle}
+          onClick={() => setIsShelfOpen((prev) => !prev)}
+          aria-expanded={isShelfOpen}
+          aria-controls="left-shelf-panel"
+          aria-label={isShelfOpen ? 'Hide controls panel' : 'Show controls panel'}
+        >
+          {isShelfOpen ? '✕' : '≡'}
+        </button>
+
         <div className={styles.shelfScroll}>
           <Card>
             <CardHeader title="Algorithm" subtitle="Select sorting algorithm" />
