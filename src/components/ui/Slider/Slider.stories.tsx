@@ -24,10 +24,10 @@ export const Default: Story = {
 export const WithRangeLabels: Story = {
   args: {
     label: 'Animation Speed',
-    value: 300,
-    min: 50,
-    max: 1000,
-    formatValue: (v) => `${v}ms`,
+    value: 75,
+    min: 0,
+    max: 100,
+    formatValue: (v) => `${v}%`,
     showRangeLabels: true,
   },
 };
@@ -35,7 +35,7 @@ export const WithRangeLabels: Story = {
 export const WithState: Story = {
   render: () => {
     const [size, setSize] = useState(15);
-    const [speed, setSpeed] = useState(300);
+    const [speed, setSpeed] = useState(75);
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '400px' }}>
         <Slider
@@ -49,10 +49,9 @@ export const WithState: Story = {
           label="Animation Speed"
           value={speed}
           onChange={setSpeed}
-          min={50}
-          max={1000}
-          step={50}
-          formatValue={(v) => `${v}ms`}
+          min={0}
+          max={100}
+          formatValue={(v) => `${v}%`}
           showRangeLabels
         />
       </div>

@@ -18,6 +18,22 @@ const algorithmOptions = [
   { value: 'heap', label: 'Heap Sort', badge: 'O(n log n)' },
 ];
 
+const MIN_ANIMATION_DELAY = 50;
+const MAX_ANIMATION_DELAY = 1000;
+
+function speedToPercentage(speed: number): number {
+  return Math.round(
+    ((MAX_ANIMATION_DELAY - speed) / (MAX_ANIMATION_DELAY - MIN_ANIMATION_DELAY)) * 100
+  );
+}
+
+function percentageToSpeed(percentage: number): number {
+  return Math.round(
+    MAX_ANIMATION_DELAY -
+    (percentage / 100) * (MAX_ANIMATION_DELAY - MIN_ANIMATION_DELAY)
+  );
+}
+
 function generateRandomArray(size: number): number[] {
   return Array.from({ length: size }, () => 
     Math.floor(Math.random() * 100) + 5
@@ -66,7 +82,7 @@ function App() {
   }, [generateNewArray]);
 
   const handleSpeedChange = useCallback((newSpeed: number) => {
-    setSpeed(newSpeed);
+    setSpeed(percentageToSpeed(newSpeed));
   }, [setSpeed]);
 
   const handleCustomValuesBlur = useCallback(() => {
@@ -174,13 +190,11 @@ function App() {
                 />
                 <Slider
                   label="Animation Speed"
-                  value={speed}
+                  value={speedToPercentage(speed)}
                   onChange={handleSpeedChange}
-                  min={50}
-                  max={1000}
-                  step={50}
-                  formatValue={(v) => `${v}ms`}
-                  showRangeLabels
+                  min={0}
+                  max={100}
+                  formatValue={(v) => `${v}%`}
                 />
                 <Input
                   label="Custom Values"
